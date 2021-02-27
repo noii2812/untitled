@@ -1,0 +1,49 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  a(href='category') go to category
+
+  form(action="/update/#{id}" method="post")
+    p Name
+    input(type=text,id="id",name="id",value=id)
+    br
+    p Name
+    input(type=text,id="name",name="name")
+    br
+    p Age
+    input(type=text,id="age",name="age")
+    br
+    p Sex
+    input(type=text,id="sex",name="sex")
+    br
+    p
+    button update
+    br
+  form(action="/customer" method="post")
+    p Name
+    input(type=text,id="name",name="name")
+    br
+    p Age
+    input(type=text,id="age",name="age")
+    br
+    p Sex
+    input(type=text,id="sex",name="sex")
+    br
+    p
+    button submit
+
+    br
+    a(href='/api/customer') display customers
+    br
+    if items != null
+      each i in items
+        p= i._id + " | " + i.sex + " | " + i.age
+        a(href='/delete/'+i._id) delete
+
+
+
+
+
+

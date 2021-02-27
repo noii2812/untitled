@@ -1,0 +1,20 @@
+form(action="/category/insert" method="post")
+    p Name
+    input(type=text,id="name",name="name")
+    br
+    p Des
+    input(type=text,id="des",name="des")
+    br
+    p Usable
+    input(type=text,id="usable",name="usable")
+    br
+    p
+    button submit
+
+    br
+    a(href='/category/get') display category
+    br
+    if items != null
+        each i in items
+            p= i._id + " | " + i.name + " | " + i.des
+            a(href='/delete/'+i._id) delete
