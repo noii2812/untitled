@@ -11,7 +11,7 @@ const token = require('../provider/authenticate');
 router.post('/category', token, (req, res, next) => {
     const body = new Category(req.body);
     Category.create(body, (err, r) => {
-        res.json({ 'code': res.statusCode, 'msg': !err ? 'inserted' : 'err',})
+        res.json({ 'code': res.statusCode, 'msg': !err ? 'inserted' : 'err', })
     });
     // mongo.connect(url, (err, client) => {
     //     const db = client.db(dbname);
@@ -24,9 +24,9 @@ router.post('/category', token, (req, res, next) => {
 });
 
 router.get('/category/:storeId', token, (req, res, next) => {
-    Category.find({"storeId": Mongo.ObjectID(req.params.storeId) }, (req, docs) => {
+    Category.find({ "storeId": Mongo.ObjectID(req.params.storeId) }, (req, docs) => {
         // console.log(req.params.storeId);
-        res.json({ 'code': res.statusCode, 'body': docs});
+        res.json({ 'code': res.statusCode, 'body': docs });
     })
 });
 
@@ -52,9 +52,9 @@ router.delete('/category/:id', token, (req, res, next) => {
 
 router.put('/category/:id', token, ((req, res, next) => {
     Category.updateOne({ "_id": Mongo.ObjectId(req.params.id) }, { $set: req.body }, (err, r) => {
-            if (err) throw err;
-            res.json({ "code": res.statusCode, "msg": "document updated" })
-        })
+        if (err) throw err;
+        res.json({ "code": res.statusCode, "msg": "document updated" })
+    })
 
 }));
 

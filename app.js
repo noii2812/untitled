@@ -11,7 +11,6 @@ var indexRouter = require('./routes/index');
 // var categoryRouter = require('./routes/category')
 
 var app = express();
-const functions = require('firebase-functions')
 // const app = require('./app');
 // exports.widgets = functions.https.onRequest(app);
 // mongo.connect(process.env.BASE_URL);
