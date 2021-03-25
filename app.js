@@ -5,12 +5,16 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const routes = require('./routes');
 var indexRouter = require('./routes/index');
+// const mongo = require('mongodb').MongoClient;
 // var usersRouter = require('./routes/users');
 // var usersRouter = require('./routes/api/customers');
-var categoryRouter = require('./routes/category')
+// var categoryRouter = require('./routes/category')
 
 var app = express();
-
+const functions = require('firebase-functions')
+// const app = require('./app');
+// exports.widgets = functions.https.onRequest(app);
+// mongo.connect(process.env.BASE_URL);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

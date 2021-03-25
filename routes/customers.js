@@ -2,21 +2,26 @@ const express = require('express');
 const router = express.Router();
 const mongo = require('mongodb').MongoClient;
 const Mongo = require("mongodb");
-const url = "mongodb+srv://noii:012345678n@cluster0.28rdh.mongodb.net/noii_db?retryWrites=true&w=majority";
-const dbname = "noii_db";
+const url = require('../provider/db').url;
+const dbname = require('../provider/db').dbname;
+const Customer = require('../collections/customer');
+const token = require('../provider/authenticate');
 
-router.post('/customer', ((req, res, next) => {
-    mongo.connect(url, (err, client) => {
-        const db = client.db(dbname);
-        db.collection('customers').insertOne(req.body, (err, res) => {
-            // console.log('data inserted');
-
-        });
-        client.close();
+router.post('/customer', token, (req, res, next) => {
+    const body = new Customer(req.body);
+    Customer.create(body, (err, doc) => {
+        res.json({'code' : res.statusCode, 'msg' : !err ? 'customer added' : 'err' })
     });
-    res.json({'code': res.statusCode});
-    // res.redirect('/')
-}));
+    // mongo.connect(url, (err, client) => {
+    //     const db = client.db(dbname);
+    //     db.collection('customers').insertOne(req.body, (err, res) => {
+    //         // console.log('data inserted');
+    //     });
+    //     client.close();
+    // });
+    // res.json({'code': res.statusCode});
+    // // res.redirect('/')
+});
 
 router.get('/customer', (req, res, next) => {
     let result_arr = [];
@@ -38,16 +43,16 @@ router.get('/customer', (req, res, next) => {
     })
 
 })
-router.post('/user/update/:id',(req, res, next) => {
+router.post('/user/update/:id', (req, res, next) => {
     const item = {
         "name": req.body.name,
         "age": req.body.age,
         "sex": req.body.sex
     };
     const id = req.params.id;
-    mongo.connect(url,(err,client) => {
-        const db  = client.db(dbname);
-        db.collection('customers').updateOne({'_id': Mongo.ObjectID(id)},{$set : item}, (err,res) => {
+    mongo.connect(url, (err, client) => {
+        const db = client.db(dbname);
+        db.collection('customers').updateOne({'_id': Mongo.ObjectID(id)}, {$set: item}, (err, res) => {
             client.close();
         });
         res.redirect('/get_customers');
@@ -57,12 +62,13 @@ router.get('/delete/:id', (req, res, next) => {
     mongo.connect(url, (err, client) => {
         const db = client.db(dbname);
         // const id = req.params.id;
-        db.collection('customers').deleteOne({'_id': Mongo.ObjectID(req.params.id)}, (err, res) => {
-            res.json({ success: id })
+        db.collection('customers').deleteOne({'_id': Mongo.ObjectID(req.params.id)}, (err, result) => {
+            res.json({success: id})
             client.close();
-
         });
         // res.redirect('/get_customers');
     })
 });
+
+
 module.exports = router;
