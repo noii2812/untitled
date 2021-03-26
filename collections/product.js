@@ -6,27 +6,27 @@ const ProductSchema = new Schema({
         type: String,
         required: true
     },
-    categoryId:{
+    categoryId: {
         type: String,
-        required:true
+        required: true
     },
-    description:{
+    description: {
         type: String,
-        required:false
+        required: false
     },
-    price:{
-        type:Number,
-        required:true
+    price: {
+        type: Number,
+        required: true
     },
-    wholeSalePrice:{
-        type:Number,
-        required:true
+    wholeSalePrice: {
+        type: Number,
+        required: true
     },
-    status:{
-        type:Boolean,
-        required:true,
+    status: {
+        type: Boolean,
+        required: true,
     }
-},{collection: 'products'});
+}, { collection: 'products' });
 
 const Products = mongoose.model('products', ProductSchema);
 

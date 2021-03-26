@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const provider = require("../provider/db");
-
-mongoose.connect(provider.url+"/"+provider.dbname,{useNewUrlParser : true});
+require('dotenv').config();
+mongoose.connect(process.env.BASE_URL + process.env.DB, { useUnifiedTopology: true });
 // mongoose.disconnect();
 module.exports = mongoose;
