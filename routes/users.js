@@ -12,10 +12,15 @@ router.get('/users', token, (req, res, next) => {
         }
     })
 })
+
 router.post('/users', (req, res, next) => {
     User.create(req.body, (err, doc) => {
-        if (err) throw err;
+        if (err) {
+            res.json({ 'err': err.message });
+        };
         res.json({ 'code': res.statusCode, 'msg': 'user added' });
     })
-})
+});
+
+
 module.exports = router;
