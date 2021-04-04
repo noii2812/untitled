@@ -5,6 +5,8 @@ const userRoute = require('./routes/users');
 const storeRoute = require('./routes/store');
 const productRouter = require('./routes/products');
 const orderRouter = require('./routes/order');
+const vendorRouter = require('./routes/vendor');
+const transactionRouter = require('./routes/transaction');
 module.exports = [
     customerRoute,
     categoryRoute,
@@ -12,5 +14,7 @@ module.exports = [
     userRoute,
     storeRoute,
     productRouter,
-    orderRouter
+    orderRouter,
+    vendorRouter,
+    transactionRouter
 ];

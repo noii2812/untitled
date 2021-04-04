@@ -8,7 +8,13 @@ const categorySche = schema({
         },
         des: {
             type: String,
-            required: true
+            required: false
+        },
+        createdBy : {
+            type : String,
+        },
+        createdAt : {
+            type: String
         },
         usable: {
             type: Boolean,

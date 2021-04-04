@@ -4,13 +4,20 @@ const User = require('../collections/users.js');
 const token = require('../provider/authenticate');
 
 router.get('/users', token, (req, res, next) => {
-    User.find((err, docs) => {
-        if (err) {
-            res.json({ 'code': res.statusCode, 'msg': 'err' });
-        } else {
-            res.json({ 'code': res.statusCode, 'body': docs });
-        }
+    new Promise((resolve,reject) => {
+        User.find((err, docs) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        })
+    }).then(val => {
+        res.json({ 'code': 201, 'body': val });
+    }).catch(val => {
+        res.json({'code': 403 , 'body' : val});
     })
+    
 })
 
 router.post('/users', (req, res, next) => {

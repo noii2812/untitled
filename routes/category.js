@@ -7,12 +7,26 @@ const url = require('../provider/db').url;
 const dbname = require('../provider/db').dbname;
 const mongoose = require("../collections/config");
 const token = require('../provider/authenticate');
+const { MongoClient } = require('mongodb');
 
 router.post('/category', token, (req, res, next) => {
     const body = new Category(req.body);
-    Category.create(body, (err, r) => {
-        res.json({ 'code': res.statusCode, 'msg': !err ? 'inserted' : 'err', })
-    });
+    new Promise((resolve,reject) => {
+        Category.create(req.body,(err,cat) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(cat);
+            }
+        })
+    }).then(val => {
+        res.json({'code' : 201, 'data' : val})
+    }).catch(val => {
+        res.json({'code' : 403, 'data' : val})
+    })
+    // Category.create(body, (err, r) => {
+    //     res.json({ 'code': res.statusCode, 'msg': !err ? 'inserted' : 'err', })
+    // });
     // mongo.connect(url, (err, client) => {
     //     const db = client.db(dbname);
     //     db.collection('category').insertOne(body, (err, res) => {
@@ -23,18 +37,47 @@ router.post('/category', token, (req, res, next) => {
     // res.json({'code': res.statusCode, 'msg': res.statusCode == 200 ? 'inserted' : 'error'})
 });
 
-router.get('/category/:storeId', token, (req, res, next) => {
-    Category.find({ "storeId": Mongo.ObjectID(req.params.storeId) }, (req, docs) => {
-        // console.log(req.params.storeId);
-        res.json({ 'code': res.statusCode, 'body': docs });
+// router.get('/category/:storeId', token, (req, res, next) => {
+//     Category.find({ "storeId": Mongo.ObjectID(req.params.storeId) }, (req, docs) => {
+//         // console.log(req.params.storeId);
+//         res.json({ 'code': res.statusCode, 'body': docs });
+//     })
+// });
+
+router.get('/category/:id',token, (req,res,next) => {
+    new Promise((resolve,reject) => {
+        Category.findOne({'_id' : Mongo.ObjectID(req.params.id)},(err,cat) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(cat);
+            }
+        })
+    }).then(val => {
+        res.json({'code' : 201, 'data' : val});
+    }).catch(val => {
+        res.json({'code': 403, 'data' : val});
     })
-});
+})
 
 router.get('/category', token, ((req, res, nex) => {
-    Category.find((err1, docs) => {
-        console.log(docs);
-        res.json({ 'code': res.statusCode, 'body': docs })
+    new Promise((resolve,reject) => {
+        Category.find((err,cat) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(cat);
+            }
+        })
+    }).then(val => {
+        res.json({'code' : 201 , 'data' : val})
+    }).catch(val => {
+        res.json({'code': 403 , 'data' : val});
     })
+    // Category.find((err1, docs) => {
+    //     console.log(docs);
+    //     res.json({ 'code': res.statusCode, 'body': docs })
+    // })
 }));
 
 router.delete('/category/:id', token, (req, res, next) => {
@@ -51,11 +94,21 @@ router.delete('/category/:id', token, (req, res, next) => {
 });
 
 router.put('/category/:id', token, ((req, res, next) => {
-    Category.updateOne({ "_id": Mongo.ObjectId(req.params.id) }, { $set: req.body }, (err, r) => {
-        if (err) throw err;
-        res.json({ "code": res.statusCode, "msg": "document updated" })
-    })
+    new Promise((resolve, reject) => {
+        Category.updateOne({ "_id": Mongo.ObjectId(req.params.id) }, { $set: req.body }, (err, cat) => {
+            if (err){
+                reject(err);
+            }else{
+                resolve(cat);
+            }
+        })
+    
+    }).then(val => {
+        res.json({ "code": 201, "msg": "document updated" , "data" : val })
 
+    }).catch(val => {
+        res.json({ "code": 403, "msg": "error" , "data" : val })
+    })
 }));
 
 module.exports = router;

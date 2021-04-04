@@ -6,15 +6,40 @@ const Mongo = require("mongodb");
 const jwt = require('jsonwebtoken');
 
 
-router.post('/product', (req, res, next) => {
-    Product.create(req.body, (err, docs) => {
-        console.log(req.body);
-        if (err) throw err
-        res.json({ 'code': res.statusCode, 'msg': 'Product Inserted' });
-    });
+router.post('/product',(req, res, next) => {
+    new Promise((resolve,reject) => {
+        Product.create(req.body, (err, docs) => {
+            // console.log(req.body);
+            if (err){
+                reject(err);
+            }else{
+                resolve(docs);
+            }
+        });
+    }).then(val => {
+        res.json({ 'code': 201, 'data': val });
+    }).catch(val => {
+        res.json({ 'code': 403, 'data': val });
+    })
 })
 
+//stockin
 
+router.put('/product/:id',token, (req,res,next) => {
+    new Promise((resolve,reject) => {
+        Product.updateOne({'_id' : Mongo.ObjectID(req.params.id)},{$inc : {'qtyOnHand' : req.body.in}},(err,pro) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(pro)
+            }
+        })
+    }).then(val => {
+        res.json({'code' : 201,'data' : val});
+    }).catch(val => {
+        res.json({'code' : 403,  'data' : val});
+    })
+})
 
 router.get('/product/limit=:limit', token, (req, res, next) => {
     let { limit } = req.params;
@@ -27,67 +52,94 @@ router.get('/product/limit=:limit', token, (req, res, next) => {
     }).limit(+limit)
 })
 
-router.get('/product', (req, res, next) => {
+router.get('/product', token,(req, res, next) => {
     // jwt.verify(req.headers['token'], process.env.JWT_SECRET, (err, decoded) => {
     //     if (err) {
     //         res.json({'code': 403, 'msg': 'who are you'});
     //     }else{
-    Product.find((err, docs) => {
-            if (err) throw err;
-            res.json({ 'code': res.statusCode, 'body': docs })
-            console.log(req.headers['token']);
+    new Promise((resolve, reject) => {
+        Product.find((err, docs) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
         })
-        // }
+    }).then(val => {
+        res.json({ 'code': 201, 'body': val });
+    }).catch(val => {
+        res.json({ 'code': 403, 'body': val });
+    })
+    // Product.find((err, docs) => {
+    //         if (err) throw err;
+    //         res.json({ 'code': res.statusCode, 'body': docs })
+    //         console.log(req.headers['token']);
+    //     })
+    // }
 
     // });
 })
 router.get('/products/:storeId', token, (req, res, next) => {
     Product.aggregate([{
-            "$project": {
-                "_id": 1,
-                "name": 1,
-                "price": 1,
-                "status": 1,
-                "wholeSalePrice": 1,
-                "categoryObjId": { "$toObjectId": "$categoryId" }
-            }
-        },
-        {
-            $lookup: {
-                from: 'category',
-                localField: 'categoryObjId',
-                foreignField: '_id',
-                as: 'CategoryDoc'
-            }
-        },
-        {
-            $unwind: {
-                path: '$CategoryDoc',
-                preserveNullAndEmptyArrays: true,
-            }
-        },
-        {
-            "$project": {
-                "_id": 1,
-                "name": 1,
-                "price": 1,
-                "status": 1,
-                "wholeSalePrice": 1,
-                "storeObjId": { "$toObjectId": "$CategoryDoc.storeId" }
-            }
-        },
-        {
-            $match: {
-                "storeObjId": Mongo.ObjectId(req.params.storeId)
-            }
+        "$project": {
+            "_id": 1,
+            "name": 1,
+            "price": 1,
+            "status": 1,
+            "wholeSalePrice": 1,
+            "categoryObjId": { "$toObjectId": "$categoryId" }
         }
+    },
+    {
+        $lookup: {
+            from: 'category',
+            localField: 'categoryObjId',
+            foreignField: '_id',
+            as: 'CategoryDoc'
+        }
+    },
+    {
+        $unwind: {
+            path: '$CategoryDoc',
+            preserveNullAndEmptyArrays: true,
+        }
+    },
+    {
+        "$project": {
+            "_id": 1,
+            "name": 1,
+            "price": 1,
+            "status": 1,
+            "wholeSalePrice": 1,
+            "storeObjId": { "$toObjectId": "$CategoryDoc.storeId" }
+        }
+    },
+    {
+        $match: {
+            "storeObjId": Mongo.ObjectId(req.params.storeId)
+        }
+    }
     ]).then(r => res.json({ 'code': res.statusCode, 'body': r }));
 })
 router.get('/product/:categoryId', token, (req, res, next) => {
-    Product.find({ "categoryId": Mongo.ObjectID(req.params.categoryId) }, (req, docs) => {
-        // console.log(req.params.storeId);
-        res.json({ 'code': res.statusCode, 'body': docs });
+    new Promise((resolve, reject) => {
+        Product.find({"categoryId": Mongo.ObjectID(req.params.categoryId) }, (err, docs) => {
+            // console.log(req.params.storeId);
+            if (err) {
+                reject(err);
+            } else {
+                resolve(docs);
+            }
+        })
+    }).then(val => {
+        res.json({ 'code': 201, 'body': val });
+    }).catch(val => {
+        res.json({ 'code': 403, 'body': val });
     })
+    // Product.find({ "categoryId": Mongo.ObjectID(req.params.categoryId) }, (req, docs) => {
+    //     // console.log(req.params.storeId);
+    //     res.json({ 'code': res.statusCode, 'body': docs });
+    // })
 });
 
 module.exports = router;

@@ -9,6 +9,7 @@ function verifyToken(req, res, next) {
     } else {
         // Forbidden
         res.sendStatus(403);
+        res.json({'code' : 403,'err' : 'err'})
     }
 
 }
