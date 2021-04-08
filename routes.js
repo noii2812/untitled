@@ -7,6 +7,7 @@ const productRouter = require('./routes/products');
 const orderRouter = require('./routes/order');
 const vendorRouter = require('./routes/vendor');
 const transactionRouter = require('./routes/transaction');
+const outOptionRouter = require('./routes/stockout_options');
 module.exports = [
     customerRoute,
     categoryRoute,
@@ -16,5 +17,6 @@ module.exports = [
     productRouter,
     orderRouter,
     vendorRouter,
-    transactionRouter
+    transactionRouter,
+    outOptionRouter
 ];

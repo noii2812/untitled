@@ -25,6 +25,22 @@ router.post('/product',(req, res, next) => {
 
 //stockin
 
+router.put('/product/remove/:id',token, (req,res,next) => {
+    new Promise((resolve,reject) => {
+        Product.updateOne({'_id' : Mongo.ObjectID(req.params.id)},{$inc : {'qtyOnHand' : -req.body.out}},(err,pro) => {
+            if(err){
+                reject(err);
+            }else{
+                resolve(pro)
+            }
+        })
+    }).then(val => {
+        res.json({'code' : 201,'data' : val});
+    }).catch(val => {
+        res.json({'code' : 403,  'data' : val});
+    })
+})
+
 router.put('/product/:id',token, (req,res,next) => {
     new Promise((resolve,reject) => {
         Product.updateOne({'_id' : Mongo.ObjectID(req.params.id)},{$inc : {'qtyOnHand' : req.body.in}},(err,pro) => {
