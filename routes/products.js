@@ -96,7 +96,8 @@ router.get('/product', token,(req, res, next) => {
     // });
 })
 router.get('/products/:storeId', token, (req, res, next) => {
-    Product.aggregate([{
+    Product.aggregate([
+        {
         "$project": {
             "_id": 1,
             "name": 1,
