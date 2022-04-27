@@ -18,6 +18,7 @@ router.post('/vendor', token, (req,res,next) => {
         res.json({'code' : 403,'data' : val})
     })
 })
+
 router.get('/vendor', token, (req,res,next) => {
     new Promise((resolve,reject) => {
         Vendor.find((err,vendor) => {
