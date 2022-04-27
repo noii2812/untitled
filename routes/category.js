@@ -24,25 +24,9 @@ router.post('/category', token, (req, res, next) => {
     }).catch(val => {
         res.json({'code' : 403, 'data' : val})
     })
-    // Category.create(body, (err, r) => {
-    //     res.json({ 'code': res.statusCode, 'msg': !err ? 'inserted' : 'err', })
-    // });
-    // mongo.connect(url, (err, client) => {
-    //     const db = client.db(dbname);
-    //     db.collection('category').insertOne(body, (err, res) => {
-    //         // console.log('data inserted');
-    //     });
-    //     client.close();
-    // });
-    // res.json({'code': res.statusCode, 'msg': res.statusCode == 200 ? 'inserted' : 'error'})
 });
 
-// router.get('/category/:storeId', token, (req, res, next) => {
-//     Category.find({ "storeId": Mongo.ObjectID(req.params.storeId) }, (req, docs) => {
-//         // console.log(req.params.storeId);
-//         res.json({ 'code': res.statusCode, 'body': docs });
-//     })
-// });
+
 
 router.get('/category/:id',token, (req,res,next) => {
     new Promise((resolve,reject) => {
